@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.0 r1840935">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables - Path To Excel TestSuite" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="inputFileGUI" elementType="Argument">
+              <stringProp name="Argument.name">inputFileGUI</stringProp>
+              <stringProp name="Argument.value">E:\\Personal\\Career\\Jmeter\\AppManager\\Jmeter.xlsx</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="outputFileGUI" elementType="Argument">
+              <stringProp name="Argument.name">outputFileGUI</stringProp>
+              <stringProp name="Argument.value">E:\\Personal\\Career\\Jmeter\\AppManager\\Jmeter_results.xlsx</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </Arguments>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler - Command Line Overrider" enabled="true">
+          <stringProp name="scriptLanguage">java</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">import org.apache.commons.lang3.StringUtils;
+String inputFileString = &quot;&quot;;
+String outputFileString = &quot;&quot;;
+
+
+if (StringUtils.isEmpty(props.get(&quot;inputFile&quot;))) {
+	inputFileString = &quot;${inputFileGUI}&quot;;
+	vars.putObject(&quot;inputFileString&quot;,inputFileString);
+	log.info(&quot;Command line parameter inputFile is empty .. using the GUI value &quot; + vars.getObject(&quot;inputFileString&quot;));
+	
+}
+
+else {
+	inputFileString = props.get(&quot;inputFile&quot;);
+	vars.putObject(&quot;inputFileString&quot;,inputFileString);
+	log.info(&quot;Command line parameter inputFile is &quot; + vars.getObject(&quot;inputFileString&quot;));
+	
+}
+
+if (StringUtils.isEmpty(props.get(&quot;outputFile&quot;))) {
+	outputFileString = &quot;${outputFileGUI}&quot;;
+	vars.putObject(&quot;outputFileString&quot;,outputFileString);
+	log.info(&quot;Command line parameter outputFile is empty .. using the GUI value &quot; + vars.getObject(&quot;outputFileString&quot;));
+	
+}
+
+else {
+	outputFileString = props.get(&quot;outputFile&quot;);
+	vars.putObject(&quot;outputFileString&quot;,outputFileString);
+	log.info(&quot;Command line parameter outputFile is &quot; + vars.getObject(&quot;outputFileString&quot;));
+	
+}
+</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler - Create WorkBook Object" enabled="true">
+          <stringProp name="scriptLanguage">java</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import java.io.*;
+log.info(&quot;------------------------------------------------------------------------------------------------------------------------------------&quot;);
+log.info(&quot;------------------------------------------------------------------------------------------------------------------------------------&quot;);
+
+XSSFWorkbook book = &quot;&quot;;
+
+try {
+InputStream inputStream = new FileInputStream(new File(vars.getObject(&quot;inputFileString&quot;)));
+book = new XSSFWorkbook(inputStream);
+inputStream.close();} catch (Exception e) { log.info(&quot;!!!!!!!!&quot; + e.getMessage() + &quot;!!!!!!!!!!!!!!!&quot;);
+log.info(&quot;xl file is&quot; + vars.getObject(&quot;inputFileString&quot;)) ;
+}
+
+if (!book.equals(&quot;&quot;)) {vars.putObject(&quot;book&quot;, book); 
+} else {SampleResult.setStopTestNow(true);
+}
+
+</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler - Get Authorization Details from Sheet 2" enabled="true">
+          <stringProp name="scriptLanguage">java</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import java.io.*;
+
+XSSFRow row = vars.getObject(&quot;book&quot;).getSheetAt(1).getRow(1);
+
+
+
+String authProtocol = row.getCell(0).toString();
+vars.put(&quot;authProtocol&quot;,authProtocol);
+
+String authServer = row.getCell(1).toString();
+vars.put(&quot;authServer&quot;,authServer);
+
+String authUsername = row.getCell(2).toString();
+vars.put(&quot;authUsername&quot;,authUsername);
+
+String authPassword = row.getCell(3).toString();
+vars.put(&quot;authPassword&quot;,authPassword);
+
+String authDomain = row.getCell(4).toString();
+vars.put(&quot;authDomain&quot;,authDomain);
+
+String authJsonEndpoint = row.getCell(5).toString();
+vars.put(&quot;authJsonEndpoint&quot;,authJsonEndpoint);
+
+String authJson = row.getCell(6).toString();
+vars.put(&quot;authJson&quot;,authJson);
+
+
+log.info(&quot;authProtocol given is &quot; + vars.getObject(&quot;authProtocol&quot;));
+log.info(&quot;authServer given is &quot; + vars.getObject(&quot;authServer&quot;));
+log.info(&quot;authUsername given is &quot; + vars.getObject(&quot;authUsername&quot;));
+log.info(&quot;authPassword given is &quot; + vars.getObject(&quot;authPassword&quot;));
+log.info(&quot;authDomain given is &quot; + vars.getObject(&quot;authDomain&quot;));
+log.info(&quot;authJsonEndpoint given is &quot; + vars.getObject(&quot;authJsonEndpoint&quot;));
+log.info(&quot;authJson given is &quot; + vars.getObject(&quot;authJson&quot;));
+
+String authBaseURL = authProtocol + &quot;://&quot; + authServer;
+log.info(&quot;authBaseURL formed is &quot; + authBaseURL);
+vars.put(&quot;authBaseURL&quot;,authBaseURL);
+
+log.info(&quot;------------------------------------------------------------------------------------------------------------------------------------&quot;);
+log.info(&quot;------------------------------------------------------------------------------------------------------------------------------------&quot;);
+
+</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+          <collectionProp name="HeaderManager.headers">
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Content-Type</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Accept</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+          </collectionProp>
+        </HeaderManager>
+        <hashTree/>
+        <AuthManager guiclass="AuthPanel" testclass="AuthManager" testname="HTTP Authorization Manager" enabled="true">
+          <collectionProp name="AuthManager.auth_list">
+            <elementProp name="" elementType="Authorization">
+              <stringProp name="Authorization.url">${authBaseURL}</stringProp>
+              <stringProp name="Authorization.username">${authUsername}</stringProp>
+              <stringProp name="Authorization.password">${authPassword}</stringProp>
+              <stringProp name="Authorization.domain">${authDomain}</stringProp>
+              <stringProp name="Authorization.realm"></stringProp>
+            </elementProp>
+          </collectionProp>
+        </AuthManager>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request - Get RepIndex" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${authJson}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${authServer}</stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol">${authProtocol}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">${authJsonEndpoint}</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="JSR223 Assertion" enabled="true">
+            <stringProp name="scriptLanguage">java</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">String responseDataTemp = prev.getResponseDataAsString();
+String authIndex = responseDataTemp;
+
+vars.putObject(&quot;authIndex&quot;,authIndex);
+log.info(&quot;authIndex received is &quot; + vars.getObject(&quot;authIndex&quot;));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</stringProp>
+          </JSR223Assertion>
+          <hashTree/>
+        </hashTree>
+        <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller - Perform on each row" enabled="true">
+          <stringProp name="WhileController.condition">${__javaScript(&quot;${stopWhile}&quot; != &quot;OK&quot;)}</stringProp>
+        </WhileController>
+        <hashTree>
+          <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter - Row Counter" enabled="true">
+            <stringProp name="CounterConfig.start">1</stringProp>
+            <stringProp name="CounterConfig.end"></stringProp>
+            <stringProp name="CounterConfig.incr">1</stringProp>
+            <stringProp name="CounterConfig.name">counter</stringProp>
+            <stringProp name="CounterConfig.format"></stringProp>
+            <boolProp name="CounterConfig.per_user">false</boolProp>
+          </CounterConfig>
+          <hashTree/>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler - Get Values from columns of the current row and store in variables + If Controller" enabled="true">
+            <stringProp name="scriptLanguage">java</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import java.io.*;
+log.info(&quot;------------------------------------------------------------------------------------------------------------------------------------&quot;);
+log.info(&quot;------------------------------------------------------------------------------------------------------------------------------------&quot;);
+
+int i = Integer.parseInt(vars.get(&quot;counter&quot;));
+
+XSSFRow row = vars.getObject(&quot;book&quot;).getSheetAt(0).getRow(i);
+vars.putObject (&quot;row&quot;, row);
+
+
+for (int j = 1; j &lt;= vars.getObject(&quot;book&quot;).getSheetAt(0).getRow(0).getLastCellNum(); j++) {
+    if (row.getCell(j) == null) {
+        row.createCell(j).setCellValue(&quot;&quot;);
+    }
+}
+
+
+String method = row.getCell(1).toString();
+vars.put(&quot;method&quot;,method);
+
+String endPoint = row.getCell(2).toString();
+// Manipulate the endpoint for Index if repIndex is present in endpoint
+if (endPoint.contains(&quot;repIndex&quot;)) {
+     endPoint = endPoint.replaceAll(&quot;repIndex&quot;,vars.getObject(&quot;authIndex&quot;));
+	log.info(&quot;Endpoint with replaced repIndex is &quot; + endPoint);
+	vars.put(&quot;endPoint&quot;,endPoint);
+}
+else {
+	vars.put(&quot;endPoint&quot;,endPoint);
+}
+
+
+
+
+
+String request = row.getCell(3).toString();
+vars.put(&quot;request&quot;,request);
+
+String expectedResult = row.getCell(5).toString();
+vars.put(&quot;expectedResult&quot;,expectedResult);
+
+String executeTC = row.getCell(8).toString().toLowerCase();
+vars.put(&quot;executeTC&quot;,executeTC);
+stopIf = &quot;&quot;;
+if(executeTC.equals(&quot;n&quot;)) {
+	stopIf = &quot;OK&quot;;
+	vars.put(&quot;stopIf&quot;,stopIf);
+	vars.getObject(&quot;row&quot;).createCell(6).setCellValue(&quot;Skipped&quot;);
+}
+else {
+	vars.put(&quot;stopIf&quot;,stopIf);	
+}
+
+
+String tcSleepTime = row.getCell(9).toString();
+vars.put(&quot;tcSleepTime&quot;,tcSleepTime);
+
+
+String details = row.getCell(0).toString();
+log.info(&quot;Description given is &quot; + details);
+
+
+
+
+log.info(&quot;Method given is &quot; + vars.getObject(&quot;method&quot;));
+log.info(&quot;EndPoint given is &quot; + vars.getObject(&quot;endPoint&quot;));
+log.info(&quot;Request given is &quot; + vars.getObject(&quot;request&quot;));
+log.info(&quot;Expected Result given is &quot; + vars.getObject(&quot;expectedResult&quot;));
+
+
+log.info(&quot;Execute Test Case given is &quot; + vars.getObject(&quot;executeTC&quot;));
+log.info(&quot;TCSleepTime given is &quot; + vars.getObject(&quot;tcSleepTime&quot;));
+
+
+</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller" enabled="true">
+            <stringProp name="IfController.condition">${__javaScript(&quot;${stopIf}&quot; != &quot;OK&quot;)}</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request - use the values set in the previous step" enabled="true">
+              <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                    <stringProp name="Argument.value">${request}</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+              <stringProp name="HTTPSampler.domain">${authServer}</stringProp>
+              <stringProp name="HTTPSampler.port"></stringProp>
+              <stringProp name="HTTPSampler.protocol">${authProtocol}</stringProp>
+              <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+              <stringProp name="HTTPSampler.path">${endPoint}</stringProp>
+              <stringProp name="HTTPSampler.method">${method}</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+              <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+              <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="JSR223 Assertion - Validate and update workbook object" enabled="true">
+                <stringProp name="scriptLanguage">java</stringProp>
+                <stringProp name="parameters"></stringProp>
+                <stringProp name="filename"></stringProp>
+                <stringProp name="cacheKey">true</stringProp>
+                <stringProp name="script">import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import java.awt.Color;
+import java.io.*;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.json.*;
+import java.util.regex.*;
+import java.util.concurrent.TimeUnit;
+String status = &quot;&quot;;
+
+void jsonStringCompareStatus(String myExpectedString, String myActualString) {
+	try {
+	JSONAssert.assertEquals(myExpectedString, myActualString, false);
+	status = &quot;Passed&quot;; // Didn&apos;t threw any exception, we are good to mark it pass as Assert is successful.
+}
+catch (AssertionError a) { 
+	status = &quot;Failed&quot;; // Mismatch in expected and actual JSON (even in lenient mode)
+	log.info(&quot;Assertion Error is &quot; + a.getMessage()); 
+}
+catch (Exception e) { 
+	// this should not happen, it means some error occurred, check the logs, generally this happens when we encounter non JSON string comparison
+	status = &quot;Error&quot;;
+	log.info(e.getMessage());    
+}	
+}
+
+
+boolean isJSONValid(String test) {
+    try {
+        new JSONObject(test);
+    } catch (JSONException ex) {
+        
+        // e.g. in case JSONArray is valid as well...
+        try {
+            new JSONArray(test);
+        } catch (JSONException ex1) {
+            return false;
+        }
+    }
+    return true;
+}
+
+boolean isJSONArray(String test) {
+     
+        try {
+            new JSONArray(test);
+        } catch (JSONException ex1) {
+            return false;
+        }
+    
+    return true;
+}
+
+boolean isRegexValid(String userInputPattern) {
+	try {
+         Pattern.compile(userInputPattern);
+         return true;
+     } 
+     catch (PatternSyntaxException p) {
+         log.info(&quot;Regex is invalid &quot; + p.getMessage()); 
+         return false;
+     }
+     return false;
+}
+
+
+
+
+
+
+// ----------------------------MAIN----------------------------//
+
+String responseMessage = prev.getResponseMessage();
+String responseCode = prev.getResponseCode();
+String responseData = prev.getResponseDataAsString();
+
+log.info(&quot;Response message is &quot; + responseMessage);
+log.info(&quot;Response code is &quot; + responseCode);
+
+
+
+// JSON matching test
+
+String myActualString = responseData;
+String myExpectedString = vars.getObject(&quot;expectedResult&quot;);
+
+log.info(&quot;actualString/Response data is &quot; + myActualString);
+log.info (&quot;expectedString/Expected Result body is &quot; + myExpectedString);
+
+
+// Based on user&apos;s input of either regex or json, match with response data and fail accordingly.
+if (isJSONValid(myExpectedString)) {
+	log.info(&quot;You&apos;ve given Json in expectedString/Expected Result Body&quot;);
+	// Expected is json in response, if it returns string in response, fail it.
+	if(!(isJSONValid(myActualString))) {
+		log.info(&quot;Server didn&apos;t return a valid Json, user expected Json, failing this test case, no need to match &quot;);
+		status = &quot;Failed&quot;;
+	}
+	else { // Server returned valid Json, user gave valid json.
+		// Handle JSON and arrayofJSON
+		if (isJSONArray(myActualString)) { // Array of JSON
+			log.info(&quot;Array of JSON encountered in API Body&quot;);
+			JSONArray jsonArrayObj = new JSONArray(myActualString);
+			for (JSONObject jsonObj : jsonArrayObj) {
+				jsonStringCompareStatus(myExpectedString,jsonObj.toString());
+				if (status.equals(&quot;Passed&quot;)) {
+					log.info(&quot;Found matching inner json &quot; + jsonObj.toString());
+					break; // End when one match found
+				}
+			}
+			if (status.equals(&quot;Failed&quot;)) {
+				log.info(&quot;No matching inner json found &quot;);
+			}
+	
+		}
+		else { // JSON
+			log.info(&quot;JSON encountered in API Body&quot;);
+			jsonStringCompareStatus(myExpectedString,myActualString);
+		}
+		
+	}
+	
+	
+	
+}
+
+else { // user didn&apos;t give valid json, lets check if he gave valid regex and proceed.
+	
+	if (!(isRegexValid(myExpectedString))) {
+		log.info(&quot;You&apos;ve given neither a valid regex nor a valid json, marking the status as error.&quot;);
+		status = &quot;Error&quot;;
+		log.info(&quot;Output of isRegexValid function is &quot; + isRegexValid(myExpectedString));
+	}
+	else { 
+		
+		if(Pattern.compile(myExpectedString).matcher(myActualString).matches()) {
+			status = &quot;Passed&quot;;
+			log.info(&quot;User Regex matched with API Body&quot;);
+		}
+		else {
+			status = &quot;Failed&quot;;
+			log.info(&quot;User Regex didn&apos;t match with API Body&quot;);
+		}
+		
+	}
+
+	
+
+}
+
+vars.getObject(&quot;row&quot;).createCell(4).setCellValue(responseData);
+vars.getObject(&quot;row&quot;).createCell(7).setCellValue(responseCode);
+
+
+log.info(&quot;Calculated Status is &quot; + status);
+vars.getObject(&quot;row&quot;).createCell(6).setCellValue(status);
+
+// Do the styling for Passed and Failed
+XSSFCellStyle my_style = vars.getObject(&quot;book&quot;).createCellStyle();
+XSSFFont my_font=vars.getObject(&quot;book&quot;).createFont();
+if (status.equals(&quot;Failed&quot;)) {
+	my_font.setColor(new XSSFColor(new java.awt.Color(255,0,0)));
+}
+if (status.equals(&quot;Passed&quot;)) {
+	my_font.setColor(new XSSFColor(new java.awt.Color(0,128,0)));
+}
+if (status.equals(&quot;Error&quot;)) {
+	my_font.setColor(new XSSFColor(new java.awt.Color(0,0,128)));
+}
+my_style.setFont(my_font);
+vars.getObject(&quot;row&quot;).getCell(6).setCellStyle(my_style);
+// End Styling
+
+// Sleep according to value given by user
+int sleepTime = Math.round(Float.valueOf(vars.getObject(&quot;tcSleepTime&quot;)));
+log.info(&quot;Sleeping for &quot; + sleepTime + &quot; seconds&quot;);
+TimeUnit.SECONDS.sleep(sleepTime);
+</stringProp>
+              </JSR223Assertion>
+              <hashTree/>
+            </hashTree>
+          </hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler - While Controller" enabled="true">
+            <stringProp name="scriptLanguage">java</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">// Jmeter While Controller
+String stopWhile = &quot;&quot;;
+int i = Integer.parseInt(vars.get(&quot;counter&quot;));
+
+if (i &gt;= vars.getObject(&quot;book&quot;).getSheetAt(0).getLastRowNum()) {
+stopWhile = &quot;OK&quot;;
+vars.put(&quot;stopWhile&quot;,stopWhile);
+}</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler - Write the workbook object to the actual excel file" enabled="true">
+          <stringProp name="scriptLanguage">java</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import java.io.*;
+
+/* We will write it in new file, writing in the same file is not recommended, because in case of unexpected errors, we might make the input file corrupt. */
+
+try {
+	FileOutputStream out = new FileOutputStream(new File(vars.getObject(&quot;outputFileString&quot;)));
+	vars.getObject(&quot;book&quot;).write(out);
+	vars.getObject(&quot;book&quot;).close();
+}
+
+catch (Exception e) {
+	log.info(&quot;!!!!!&quot; + e.getMessage() + &quot;!!!!!&quot;);
+}
+</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
